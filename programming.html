@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>KDH - Programming Projects</title>
+</head>
+<body>
+	<header>
+		<h1>Programming Projects</h1>
+		<a href="index.html">Home</a>
+	</header>
+
+	<hr />
+
+	<section id="project1">
+		<h2>Data Structure Library</h2>
+		<a href="*">Github: Data Structures Library (NOTIMPLEMENTED)</a>
+		<p>In this project I want to implement some of the basic data structures used in everyday projects.</p>
+		<ul>
+			<li>Linked Lists - Single and Double</li>
+			<li>Trees and Tries</li>
+			<li>Graphs</li>
+			<li>Stacks and Queues</li>
+			<li>Heaps</li>
+			<li>Vectors</li>
+			<li>ArrayLists</li>
+			<li>Hashtables</li>
+		</ul>
+	</section>
+
+	<hr />
+
+	<section id="project2">
+		<h2>Recursive-Descent Parser</h2>
+		<a href="*">Github: Recursive-Descent Parser (NOTIMPLEMENTED)</a>
+		<p>In this project I just want to implent a simple RDP as an exploration into compiler design.</p>
+		<p>I am aiming to create a language which is similar to F# in many ways which compiles down to C++ code which can then be fixed/modified and compiled. A few fun things should be enabled by default: every function should be nodiscard and noexcept unless attributes are used to specify otherwise, variables are const by default.</p>
+		<p>Attached is a sample grammar I have come up with so far (pre-alpha leave me alone if its bad):</p>
+		<pre>
+			program         	= importSection { statement "\n" };
+			importSection   	= { importDecl "\n" };
+			importDecl      	= "#import" string;
+
+			statement       	= varDef | functionDef | expression;
+
+			letDef          	= "let" identifier ":=" expression "\n";
+			functionDef     	= { attributesDecl "\n" } "fn" identifier parameterList "return" type ":" "\n" { indentedExpression };
+
+			expression      	= identifier | literal | functionCall | ifExpr | binaryExpr | "(" expression ")";
+			ifExpr          	= "if" expression "then" expression "else" expression;
+			binaryExpr      	= expression operator expression;
+			functionCall    	= identifier "(" { expression { "," expression } } ")";
+
+			attributesDecl  	= "[&lt;" attribute { ";" attribute } "&gt;]";
+			attribute       	= identifier | functionCall;
+
+			parameterList   	= identifier { identifier };
+			indentedExpression 	= "\t" expression "\n";
+
+			identifier      	= letter { letter | digit | "_" };
+			literal         	= integer | string;
+			integer         	= digit { digit };
+			string          	= "\"" { anyCharacter } "\"";
+			type            	= identifier;
+			operator        	= "+" | "-" | "*" | "/";
+
+			letter          	= "a" | "b" | ... | "z" | "A" | "B" | ... | "Z";
+			digit           	= "0" | "1" | ... | "9";
+			anyCharacter    	= ? any character except quote ?;
+		</pre>
+		<p>And here is some sample code:</p>
+		<pre>
+			enum Gender {
+				Female,
+				Male,
+				Other
+			}
+
+			record Actor {
+				id: string,
+				name: string,
+				gender: Gender,
+				age: int
+			}
+
+			fn init(id: string, name: string, gender: Gender, age: int) -> Actor:
+				return Actor(id, name, gender, age)
+
+			fn genderToString(g: Gender) -> string:
+				match g:
+				| Gender::Female -> return "Female"
+				| Gender::Male -> return "Male"
+				| default -> return "Other"
+
+			[&lt;Exceptions&gt;]
+			fn printActor(self: Actor) -> void:
+				print("ID: ", self.id)
+				print("NAME: ", self.name)
+				print("GENDER: ", genderToString(self.gender))
+				println("AGE: ", self.age)
+
+			[&lt;EntryPoint; Exceptions&gt;]
+			fn main() -> int:
+				let siwan: Actor := init("magister_npc_siwan", "Magister Siwan", Gender.Female, 21)
+				printActor(siwan)
+				
+				let fane: Actor := init("origins_characeter_fane", "Fane", Gender.Other, 100)
+				printActor(fane)
+		</pre>
+		<p>And the equivalent C++ Code:</p>
+		<pre>
+			enum class Gender {
+				Female,
+				Male,
+				Other
+			};
+			
+			struct Actor {
+				std::string id;
+				std::string name;
+				Gender gender;
+				int age;
+			};
+			
+			[[nodiscard]]
+			Actor init(std::string id, std::string name, Gender gender, int age) noexcept {
+				Actor new_actor = {id, name, gender, age};
+				return new_actor;
+			}
+			
+			[[nodiscard]]
+			std::string genderToString(Gender g) noexcept {
+				switch(g) {
+					case Gender::Female:
+						return "Female";
+						break;
+					case Gender::Male:
+						return "Male";
+						break;
+					default:
+						return "Other";
+				}
+			}
+
+			void printActor(Actor self) {
+				std::cout << "ID: " << self.id;
+				std::cout << "NAME: " << self.name;
+				std::cout << "GENDER: " << genderToString(self.gender);
+				std::cout << "AGE: " << self.age << std::endl;
+			}
+			
+			int main() {
+				const Actor siwan = init("magister_npc_siwan", "Magister Siwan", Gender.Female, 21);
+				printActor(siwan);
+				
+				const Actor fane = init("origins_characeter_fane", "Fane", Gender.Other, 100);
+				printActor(fane);
+			}
+		</pre>
+	</section>
+
+	<hr />
+
+	<section id="project3">
+		<h2>Pathfinder2e Party Generator / Fantasy Party Generator</h2>
+		<a href="*">Github: Pathfinder2e Party Generator (NOTIMPLEMENTED)</a>
+		<p>I love making TTRPG generators (<em>not because I actually play TTRPG's but I find them extremely useful for worldbuilding</em>).</p>
+		<p><strong>Version 1.0</strong> will generate the following:</p>
+		<ul>
+			<li>Initial(s)</li>
+			<li>Ancestory/Race</li>
+			<li>Gender</li>
+			<li>Age (Sims style [young, adult, elder, etc...])</li>
+			<li>Background</li>
+			<li>Occupation/Class</li>
+			<li>Descriptors (a few words to help visualize the character [words taken from Mythic GM word table])</li>
+			<li>Enneagram Type</li>
+		</ul>
+		<p>In future versions some goals are:</p>
+		<ul>
+			<li>Specialize the generator based on the actors ancestory and gender</li>
+			<li>Make it more generic to allow it generate characters for many different systems</li>
+			<li>Add appearance information i.e. hair style, color, texture; height; weight; etc...</li>
+		</ul>
+	</section>
+
+	<hr />
+
+</body>
+</html>
